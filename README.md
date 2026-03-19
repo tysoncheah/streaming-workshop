@@ -1,11 +1,5 @@
 # Module 7 Homework: Streaming
 
-## NOTE
-
-Below is the exact markdown (MD) file from the original repository (data-engineering-zoomcamp) with **my answers on the bottom**. Please click [here](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/cohorts/2026/07-streaming/homework.md) to go to the actual original file.
-
----
-
 In this homework, we'll practice streaming with Kafka (Redpanda) and PyFlink.
 
 We use Redpanda, a drop-in replacement for Kafka. It implements the same
@@ -66,15 +60,7 @@ ANSWER:
 I ran the command listed in the question and got the following output:
 
 ```bash
-(streaming-workshop-de-zoomcamp-2026) > docker exec -it streaming-workshop-de-zoomcamp-2026-redpanda-1 rpk version
 rpk version: v25.3.9
-Git ref:     836b4a36ef6d5121edbb1e68f0f673c2a8a244e2
-Build date:  2026 Feb 26 07 48 21 Thu
-OS/Arch:     linux/amd64
-Go version:  go1.24.3
-
-Redpanda Cluster
-  node-1  v25.3.9 - 836b4a36ef6d5121edbb1e68f0f673c2a8a244e2
 ```
 
 This means the version of Redpanda I am running is v25.3.9.
@@ -82,12 +68,6 @@ This means the version of Redpanda I am running is v25.3.9.
 ## Question 2. Sending data to Redpanda
 
 Create a topic called `green-trips`:
-
-## Homework note (topic name)
-
-I accidentally used `green_trips` (underscore) instead of `green-trips` (hyphen). All code in this repo (producer, consumer, and Flink jobs) reads/writes `green_trips`, so the results shown below correspond to that topic.
-
-In order to reproduce the results I got, **please replace `green-trips` with `green_trips`.**
 
 ```bash
 docker exec -it workshop-redpanda-1 rpk topic create green-trips
@@ -158,7 +138,7 @@ print(f'took {(t1 - t0):.2f} seconds')
 ```
 
 ```bash
-took 12.93 seconds
+took 27.76 seconds
 ```
 
 Since it took 12.93 seconds, the closest answer is 10 seconds.
@@ -180,40 +160,7 @@ How many trips have `trip_distance` > 5?
 ### Question 3 Answer
 
 ANSWER:
-- **8506** trips > 5 miles (not km - must've been a typo in the question)
-- **15491** trips > 5 km
-
-In NYC TLC data, `trip_distance` is reported in miles. The question says “kilometers”, but the multiple-choice options match the miles interpretation. Using miles, the count is 8506 trips with `trip_distance > 5`. (Converting to km gives 15491 trips with distance > 5 km). I also attached the notebook I used to do this in this repository (`consumer_hw_q3.ipynb`). Again, no outputs will be shown in it as they were ran in a codespace on another repo.
-
-```python
-# ran KafkaConsumer with consumer_timeout_ms=5000, stop after 5s w/ no new records to get counts after the stream was done for the parquet we use
-
-
-num_trips_gt_5km = 0
-num_trips_gt_5m = 0
-
-# according to nyc taxi data dictionary, "The elapsed trip distance in miles reported by the taximeter."
-# need to turn miles to km before checking
-
-for record in consumer:
-    if record.value.trip_distance > 5.0:
-        num_trips_gt_5m += 1
-    if record.value.trip_distance * 1.60934 > 5.0:
-        num_trips_gt_5km += 1
-    print(record.value)
-
-print(f"Number of trips greater than 5km: {num_trips_gt_5km}")
-
-print(f"Number of trips greater than 5m: {num_trips_gt_5m}")
-```
-
-```bash
-...
-Ride(lpep_pickup_datetime='2025-10-31 23:23:00', lpep_dropoff_datetime='2025-10-31 23:37:00', PULocationID=195, DOLocationID=33, passenger_count=-1, trip_distance=3.0, tip_amount=0.0, total_amount=19.6)
-
-Number of trips greater than 5km: 15491
-Number of trips greater than 5m: 8506
-```
+- **8506** trips > 5 
 
 ## Part 2: PyFlink (Questions 4-6)
 
