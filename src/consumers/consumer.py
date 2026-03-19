@@ -23,7 +23,7 @@ print(f"Listening to {topic_name}...")
 count = 0
 for message in consumer:
     ride = message.value
-    pickup_dt = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000)
+    pickup_dt = datetime.fromtimestamp(ride.lpep_pickup_datetime / 1000)
     print(f"Received: PU={ride.PULocationID}, DO={ride.DOLocationID}, "
           f"distance={ride.trip_distance}, amount=${ride.total_amount:.2f}, "
           f"pickup={pickup_dt}")
